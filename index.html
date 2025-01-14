@@ -154,15 +154,6 @@
                 wrongSound.play();
                 options[questions[currentQuestion].correct].classList.add('correct');
             }
-
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    updateQuestion();
-                } else {
-                    alert('Quiz complete!');
-                }
-            }, 2000);
         }
 
         function createNav() {
