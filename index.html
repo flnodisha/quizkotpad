@@ -81,18 +81,11 @@
             background: #ffd700;
             color: #000428;
         }
-
-        #timer {
-            font-size: 24px;
-            color: #ffd700;
-            margin: 10px;
-        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🏆 Kaun Banega Crorepati 🏆</h1>
-        <div id="timer">30</div>
     </div>
 
     <div class="question-container">
@@ -133,8 +126,6 @@
         ];
 
         let currentQuestion = 0;
-        let timer;
-        let timeLeft = 30;
 
         function updateQuestion() {
             const questionData = questions[currentQuestion];
@@ -148,12 +139,9 @@
             document.querySelectorAll('.nav-item').forEach((nav, index) => {
                 nav.classList.toggle('active', index === currentQuestion);
             });
-
-            resetTimer();
         }
 
         function checkAnswer(selected) {
-            clearInterval(timer);
             const options = document.querySelectorAll('.option');
             const correctSound = document.getElementById('correct-sound');
             const wrongSound = document.getElementById('wrong-sound');
@@ -175,26 +163,6 @@
                     alert('Quiz complete!');
                 }
             }, 2000);
-        }
-
-        function resetTimer() {
-            timeLeft = 30;
-            document.getElementById('timer').textContent = timeLeft;
-            clearInterval(timer);
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    alert("Time's up! Moving to the next question.");
-                    currentQuestion++;
-                    if (currentQuestion < questions.length) {
-                        updateQuestion();
-                    } else {
-                        alert('Quiz complete!');
-                    }
-                }
-            }, 1000);
         }
 
         function createNav() {
