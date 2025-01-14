@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Existing styles, edited for clarity */
+        body {
+            background: linear-gradient(135deg, #000428, #004e92);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin: 20px;
+            color: #ffd700;
+        }
+
+        .question-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .option {
+            background: linear-gradient(45deg, #000428, #004e92);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .option.correct {
+            background: green;
+            color: white;
+        }
+
+        .option.wrong {
+            background: red;
+            color: white;
+        }
+
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .nav-item {
+            background: #004e92;
+            border: 2px solid #ffd700;
+            color: white;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: #ffd700;
+            color: #000428;
+        }
+
+        #timer {
+            font-size: 24px;
+            color: #ffd700;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏆 Kaun Banega Crorepati 🏆</h1>
+        <div id="timer">30</div>
+    </div>
+
+    <div class="question-container">
+        <h2 id="question">Which planet is known as the Red Planet?</h2>
+    </div>
+
+    <div class="options-container">
+        <button class="option" onclick="checkAnswer(0)">A: Mars</button>
+        <button class="option" onclick="checkAnswer(1)">B: Venus</button>
+        <button class="option" onclick="checkAnswer(2)">C: Jupiter</button>
+        <button class="option" onclick="checkAnswer(3)">D: Saturn</button>
+    </div>
+
+    <div class="question-nav" id="question-nav">
+        <!-- Navigation items will be dynamically created -->
+    </div>
+
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <audio id="wrong-sound" src="wrong.mp3"></audio>
+
+    <script>
+        const questions = [
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Mars", "Venus", "Jupiter", "Saturn"],
+                correct: 0
+            },
+            {
+                question: "Who is known as the 'Father of the Nation' in India?",
+                options: ["Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Patel", "Subhas Chandra Bose"],
+                correct: 0
+            },
+            {
+                question: "What is the capital of Japan?",
+                options: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let timer;
+        let timeLeft = 30;
+
+        function updateQuestion() {
+            const questionData = questions[currentQuestion];
+            document.getElementById('question').textContent = questionData.question;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.textContent = ${String.fromCharCode(65 + index)}: ${questionData.options[index]};
+                option.className = 'option'; // Reset styles
+            });
+
+            document.querySelectorAll('.nav-item').forEach((nav, index) => {
+                nav.classList.toggle('active', index === currentQuestion);
+            });
+
+            resetTimer();
+        }
+
+        function checkAnswer(selected) {
+            clearInterval(timer);
+            const options = document.querySelectorAll('.option');
+            const correctSound = document.getElementById('correct-sound');
+            const wrongSound = document.getElementById('wrong-sound');
+
+            if (selected === questions[currentQuestion].correct) {
+                options[selected].classList.add('correct');
+                correctSound.play();
+            } else {
+                options[selected].classList.add('wrong');
+                wrongSound.play();
+                options[questions[currentQuestion].correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    updateQuestion();
+                } else {
+                    alert('Quiz complete!');
+                }
+            }, 2000);
+        }
+
+        function resetTimer() {
+            timeLeft = 30;
+            document.getElementById('timer').textContent = timeLeft;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("Time's up! Moving to the next question.");
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        updateQuestion();
+                    } else {
+                        alert('Quiz complete!');
+                    }
+                }
+            }, 1000);
+        }
+
+        function createNav() {
+            const navContainer = document.getElementById('question-nav');
+            navContainer.innerHTML = '';
+            questions.forEach((_, index) => {
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+                navItem.textContent = Q${index + 1};
+                navItem.onclick = () => {
+                    currentQuestion = index;
+                    updateQuestion();
+                };
+                navContainer.appendChild(navItem);
+            });
+        }
+
+        createNav();
+        updateQuestion();
+    </script>
+</body>
+</html>
