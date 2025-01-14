@@ -141,7 +141,7 @@
             document.getElementById('question').textContent = questionData.question;
             const options = document.querySelectorAll('.option');
             options.forEach((option, index) => {
-                option.textContent = ${String.fromCharCode(65 + index)}: ${questionData.options[index]};
+                option.textContent = `${String.fromCharCode(65 + index)}: ${questionData.options[index]}`;
                 option.className = 'option'; // Reset styles
             });
 
@@ -203,7 +203,7 @@
             questions.forEach((_, index) => {
                 const navItem = document.createElement('div');
                 navItem.className = 'nav-item';
-                navItem.textContent = Q${index + 1};
+                navItem.textContent = `Q${index + 1}`;
                 navItem.onclick = () => {
                     currentQuestion = index;
                     updateQuestion();
